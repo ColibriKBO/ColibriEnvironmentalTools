@@ -35,37 +35,62 @@ License: GPL
 BME280 inSensor;
 BME280 outSensor;
 
-inSensor.setSampling(Adafruit_BME280::MODE_FORCED,
-  Adafruit_BME280::SAMPLING_X1, // temperature
-  Adafruit_BME280::SAMPLING_X1, // pressure
-  Adafruit_BME280::SAMPLING_X1, // humidity
-  Adafruit_BME280::FILTER_OFF   );
 
-outSensor.setSampling(Adafruit_BME280::MODE_FORCED,
-  Adafruit_BME280::SAMPLING_X1, // temperature
-  Adafruit_BME280::SAMPLING_X1, // pressure
-  Adafruit_BME280::SAMPLING_X1, // humidity
-  Adafruit_BME280::FILTER_OFF   );
-                      
-delayTime = 60000; // in milliseconds
 
 void setup() {
-  inSensor.settings.commInnterface=I2C_MODE;
-  inSensor.settings.I2CAddress = 0x76;
-
-  outSensor.settings.commInnterface=I2C_MODE;
-  outSensor.settings.I2CAddress = 0x77;
-
   Serial.begin(9600);
-  Serial.println("Starting sensors... result of .begin():");
-  delay(10);
-  Serial.print("Inside sensor found at: 0x");
-  Serial.println(inSensor.begin(), HEX);
-  Serial.print("Outside sensor found at: 0x");
-  Serial.println(outSensor.begin(), HEX);
+  
+  Wire.begin();
+  Wire.setClock(100000);
+
+  inSensor.setI2CAddress = 0x76;
+  if(inSensor.beginI2C() == false) Serial.println("Sensor A connect failed");
+  
+  outSensor.setI2CAddress = 0x77;
+  if(outSensor.beginI2C() == false) Serial.println("Sensor A connect failed");
+
+  inSensor.setReferencePressure(101200);
+  outSensor.setReferencePressure(101200);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  delay(delayTime);
+  Serial.print(" TempA: ");
+  Serial.print(mySensorA.readTempC(), 2);
+
+  Serial.print(" TempB: ");
+  Serial.print(mySensorB.readTempC(), 2);
+  
+  Serial.print("HumidityA: ");
+  Serial.print(inSensor.readFloatHumidity(), 0);
+
+  Serial.print(" HumidityB: ");
+  Serial.print(outSensor.readFloatHumidity(), 0);
+
+  Serial.print(" DewpointA: ");
+  Serial.print(inSensor.dewPointC(), 2);
+
+  Serial.print(" DewpointB: ");
+  Serial.print(outSensor.dewPointC(), 2);
+
+  Serial.print(" PressureA: ");
+  Serial.print(inSensor.readFloatPressure(), 0);
+
+  Serial.print(" PressureB: ");
+  Serial.print(outSensor.readFloatPressure(), 0);
+
+  Serial.print(" Locally Adjusted Altitude: ");
+  Serial.print(inSensor.readFloatAltitudeMeters(), 1);
+
+  Serial.print(" Locally Adjusted Altitude: ");
+  Serial.print(outSensor.readFloatAltitudeMeters(), 1);
+
+  Serial.print(" Rain Flag: ");
+
+  Serial.print(" IR1 Reading: ");
+
+  Serial.print(" IR2 Reading: ");
+
+  Serial.println();
+
+  delay(5000);
 }
