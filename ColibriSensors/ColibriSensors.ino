@@ -16,9 +16,16 @@ License: GPL
  -----------------
  BME280 -> Arduino
  GND    -> GND
- 3.3V   -> 3.3V
- SDA(1) -> A4
- SCL(1) -> A5
+ VCC    -> 5V
+ SDA    -> A4
+ SCL    -> A5
+ SDO    -> GND
+ 
+ (SDO is pin 5 on the sensor package. On our board it
+ is connected to the middle pad of the 3 pads to the
+ lower left of the package. Cut the trace between the
+ two on the left and jump the middle and right pads to
+ get 0x77.
  
 */
 
