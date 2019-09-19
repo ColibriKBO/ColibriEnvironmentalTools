@@ -26,6 +26,16 @@ License: GPL
  GND    -> GND
  D0     -> N.C. (read from D or A)
  A0     -> A0
+
+ IR     -> Arduino
+
+ Relay  -> Arduino
+ GND    -> GND
+ VCC    -> 5V
+ IN1    -> D4
+ IN2    -> D5
+ IN3    -> D6
+ IN4    -> D7
  
  (SDO is pin 5 on the sensor package. On our board it
  is connected to the middle pad of the 3 pads to the
