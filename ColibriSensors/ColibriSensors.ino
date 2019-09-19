@@ -20,6 +20,12 @@ License: GPL
  SDA    -> A4(SDA)
  SCL    -> A5(SCL)
  SDO    -> GND
+
+ Rain   -> Arduino
+ VCC    -> 5V
+ GND    -> GND
+ D0     -> N.C. (read from D or A)
+ A0     -> A0
  
  (SDO is pin 5 on the sensor package. On our board it
  is connected to the middle pad of the 3 pads to the
@@ -35,7 +41,8 @@ License: GPL
 BME280 inSensor;
 BME280 outSensor;
 
-
+const int rainMin = 0;
+const int rainMax = 1024;
 
 void setup() {
   Serial.begin(9600);
@@ -54,6 +61,9 @@ void setup() {
 }
 
 void loop() {
+  int rainReading = analogRead(A0);
+  int rainStatus = map(rainReading, rainMin, rainMax, 3, 0);
+  
   Serial.print(" TempA: ");
   Serial.print(mySensorA.readTempC(), 2);
 
@@ -85,10 +95,16 @@ void loop() {
   Serial.print(outSensor.readFloatAltitudeMeters(), 1);
 
   Serial.print(" Rain Flag: ");
+  Serial.print(range);
+
+  Serial.print(" Rain Value: ");
+  Serial.print(rainStatus);
 
   Serial.print(" IR1 Reading: ");
 
   Serial.print(" IR2 Reading: ");
+
+  Serial.print(" Relay State: ");
 
   Serial.println();
 
