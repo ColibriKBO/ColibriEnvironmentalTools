@@ -28,6 +28,12 @@ License: GPL
  A0     -> A0
 
  IR     -> Arduino
+ GND    -> GND
+ VIN    ->
+ SDA    -> A4(SDA)
+ SCL    -> A5(SCL)
+
+ Photo  -> Arduino
 
  Relay  -> Arduino
  GND    -> GND
@@ -54,7 +60,26 @@ BME280 outSensor;
 const int rainMin = 0;
 const int rainMax = 1024;
 
+const int r1 = 4;
+const int r2 = 5;
+const int r3 = 6;
+const int r4 = 7;
+
+volatile byte r1State = LOW;
+volatile byte r2State = LOW;
+volatile byte r3State = LOW;
+volatile byte r4State = LOW;
+
 void setup() {
+  pinMode(r1, OUTPUT);
+  digitalWrite(r1, LOW);
+  pinMode(r2, OUTPUT);
+  digitalWrite(r2, LOW);
+  pinMode(r3, OUTPUT);
+  digitalWrite(r3, LOW);
+  pinMode(r4, OUTPUT);
+  digitalWrite(r4, LOW);
+  
   Serial.begin(9600);
   
   Wire.begin();
