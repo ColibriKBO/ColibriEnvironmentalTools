@@ -34,7 +34,9 @@ License: GPL
  SCL    -> A5(SCL)
 
  Photo  -> Arduino
-
+ 5V     -> 5V
+ Out    -> A1
+ 
  Relay  -> Arduino
  GND    -> GND
  VCC    -> 5V
@@ -60,10 +62,14 @@ BME280 outSensor;
 const int rainMin = 0;
 const int rainMax = 1024;
 
-const int r1 = 4;
-const int r2 = 5;
-const int r3 = 6;
-const int r4 = 7;
+const int rainPin = 0;
+
+const int photoPin = 1;
+
+const int r1Pin = 4;
+const int r2Pin = 5;
+const int r3Pin = 6;
+const int r4Pin = 7;
 
 volatile byte r1State = LOW;
 volatile byte r2State = LOW;
@@ -71,14 +77,14 @@ volatile byte r3State = LOW;
 volatile byte r4State = LOW;
 
 void setup() {
-  pinMode(r1, OUTPUT);
-  digitalWrite(r1, LOW);
-  pinMode(r2, OUTPUT);
-  digitalWrite(r2, LOW);
-  pinMode(r3, OUTPUT);
-  digitalWrite(r3, LOW);
-  pinMode(r4, OUTPUT);
-  digitalWrite(r4, LOW);
+  pinMode(r1Pin, OUTPUT);
+  digitalWrite(r1Pin, LOW);
+  pinMode(r2Pin, OUTPUT);
+  digitalWrite(r2Pin, LOW);
+  pinMode(r3Pin, OUTPUT);
+  digitalWrite(r3Pin, LOW);
+  pinMode(r4Pin, OUTPUT);
+  digitalWrite(r4Pin, LOW);
   
   Serial.begin(9600);
   
@@ -98,6 +104,8 @@ void setup() {
 void loop() {
   int rainReading = analogRead(A0);
   int rainStatus = map(rainReading, rainMin, rainMax, 3, 0);
+
+  photocellReading = analogRead(photoPin);
   
   Serial.print(" TempA: ");
   Serial.print(mySensorA.readTempC(), 2);
