@@ -111,7 +111,7 @@ def main():
 	wx_socket.settimeout(10)
 
 	cld_socket = socket(AF_INET, SOCK_DGRAM)
-	cld_socket.settimeout(2)
+	cld_socket.settimeout(10)
 
 	#wx_socket.connect(wx_address)
 
@@ -122,7 +122,7 @@ def main():
 			print('test1')
 			wx_socket.sendto(req_data, wx_address)
 			print('test2')
-			rec_data = wx_socket.recv(1024)
+			rec_data, addr = wx_socket.recvfrom(2048)
 			print('test3')
 			wx_socket.close()
 
