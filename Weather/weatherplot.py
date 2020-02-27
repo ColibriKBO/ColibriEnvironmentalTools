@@ -20,12 +20,12 @@ from datetime import timedelta
 from scipy import interpolate
 
 def uploadFileFTP(sourceFile1, sourceFile2, server, username, password):
-    print('Uploading ' + sourceFilePath)
-    ftp = ftplib.FTP(server)
-    ftp.login(username, password)
-    ftp.storbinary('STOR ' + sourceFile1, open(sourceFile1, 'rb'), 1024)
-    ftp.storbinary('STOR ' + sourceFile2, open(sourceFile2, 'rb'), 1024)
-    ftp.quit()
+	print('Uploading ' + sourceFilePath)
+	ftp = ftplib.FTP(server)
+	ftp.login(username, password)
+	ftp.storbinary('STOR ' + sourceFile1, open(sourceFile1, 'rb'), 1024)
+	ftp.storbinary('STOR ' + sourceFile2, open(sourceFile2, 'rb'), 1024)
+	ftp.quit()
 
 def getData(address, sckt, req_data):
 	print(address)
@@ -47,8 +47,8 @@ def getData(address, sckt, req_data):
 	return msg
 
 def label(xy, text):
-    y = xy[1] - 0.15  # shift y-value for label so that it's below the artist
-    plt.text(xy[0], y, text, ha="center", family='sans-serif', size=14)
+	y = xy[1] - 0.15  # shift y-value for label so that it's below the artist
+	plt.text(xy[0], y, text, ha="center", family='sans-serif', size=14)
 
 def sliceCBar(maxspeed, cbarname):
 	# if speed > maxspeed:
@@ -60,50 +60,50 @@ def sliceCBar(maxspeed, cbarname):
 	cmaparr = []
 
 	for i in range(cmap.N):
-	    rgb = cmap(i)[:3] # will return rgba, we take only first 3 so we get rgb
-	    cmaparr.append(matplotlib.colors.rgb2hex(rgb))
+		rgb = cmap(i)[:3] # will return rgba, we take only first 3 so we get rgb
+		cmaparr.append(matplotlib.colors.rgb2hex(rgb))
 
 	return cmaparr
 
 def rot_text(ang): 
-    rotation = np.degrees(np.radians(ang) * np.pi / np.pi - np.radians(90))
-    return rotation
+	rotation = np.degrees(np.radians(ang) * np.pi / np.pi - np.radians(90))
+	return rotation
 
 def spdang(spd):
 	angle = 180.0 - (spd/maxspeed*180.0)
 	return angle
 
 def openCloudLog(logname):
-    print('Making daily plot...')
-    data = pd.read_csv(logname)
-    data.columns = ['timestamp','SkyT','GroundT']
+	print('Making daily plot...')
+	data = pd.read_csv(logname)
+	data.columns = ['timestamp','SkyT','GroundT']
 
-    t = data['timestamp']
-    y = data['SkyT']-data['GroundT']
-    temp = data['GroundT']
+	t = data['timestamp']
+	y = data['SkyT']-data['GroundT']
+	temp = data['GroundT']
 
-    # Convert timestamp to hours and put in a column in data
-    data['timeh'] = 99
+	# Convert timestamp to hours and put in a column in data
+	data['timeh'] = 99
 
-    for i in range(len(data.index)):
-        t2 = int(dt.fromtimestamp(data['timestamp'][i]).strftime('%H')) + float(dt.fromtimestamp(data['timestamp'][i]).strftime('%M'))/60 + float(dt.fromtimestamp(data['timestamp'][i]).strftime('%S'))/3600
-        data.loc[i,'timeh'] = t2
+	for i in range(len(data.index)):
+		t2 = int(dt.fromtimestamp(data['timestamp'][i]).strftime('%H')) + float(dt.fromtimestamp(data['timestamp'][i]).strftime('%M'))/60 + float(dt.fromtimestamp(data['timestamp'][i]).strftime('%S'))/3600
+		data.loc[i,'timeh'] = t2
 
-    x = data['timeh']
+	x = data['timeh']
 
-    # Arrange the data into blocks and calculate the mean of each block
-    # blocksize = 600
-    samplerate = 6
-    f = interpolate.interp1d(t,y)
-    xnew = np.arange(min(data['timestamp']),max(data['timestamp']),samplerate)
-    ynew = f(xnew)
-    # interval = 1
-    n = int(len(ynew))
+	# Arrange the data into blocks and calculate the mean of each block
+	# blocksize = 600
+	samplerate = 6
+	f = interpolate.interp1d(t,y)
+	xnew = np.arange(min(data['timestamp']),max(data['timestamp']),samplerate)
+	ynew = f(xnew)
+	# interval = 1
+	n = int(len(ynew))
 
-    a = ynew[0:(n-1)].reshape(1,1,n-1)
-    block = np.mean(a, axis=1)
+	a = ynew[0:(n-1)].reshape(1,1,n-1)
+	block = np.mean(a, axis=1)
 
-    return block, x, y, temp
+	return block, x, y, temp
 
 def main():
 	wx_address= (b'172.16.61.10', 17770)
@@ -277,12 +277,12 @@ def main():
 			fontcolor = 'green'
 
 		ax_spd.text(0, 0.0115, speed, horizontalalignment='center', \
-		    verticalalignment='center', fontweight='bold', color=fontcolor, fontproperties=fm.FontProperties(fname=fontname, size=30))
+			verticalalignment='center', fontweight='bold', color=fontcolor, fontproperties=fm.FontProperties(fname=fontname, size=30))
 
 		for i in range(1,10):
 			ax_spd.text(0.0915 * np.cos(np.radians(180/10*i)), 0.0915 * np.sin(np.radians(180/10*i)), str(int(maxspeed-maxspeed/10*i)), \
-		    	horizontalalignment='center', verticalalignment='center', color='black', \
-		    	fontweight='bold', rotation = rot_text(180/10*i), fontproperties=fm.FontProperties(fname=fontname, size=10))
+				horizontalalignment='center', verticalalignment='center', color='black', \
+				fontweight='bold', rotation = rot_text(180/10*i), fontproperties=fm.FontProperties(fname=fontname, size=10))
 
 		# Add wind direction indicator
 		wndx = np.sin(wnddir)*0.027
@@ -355,9 +355,9 @@ def main():
 		#             cmap='viridis')
 		ax_cld.fill_between([-12,12],-18,0, hatch='x', color='green', alpha=0.8)
 		ax_cld.fill_between(delta_midnight, 0, 90,
-		                 sunaltazs_July12_to_13.alt < -0*u.deg, color='0.5', zorder=0)
+						 sunaltazs_July12_to_13.alt < -0*u.deg, color='0.5', zorder=0)
 		ax_cld.fill_between(delta_midnight, 0, 90,
-		                 sunaltazs_July12_to_13.alt < -18*u.deg, color='k', zorder=0)
+						 sunaltazs_July12_to_13.alt < -18*u.deg, color='k', zorder=0)
 		# plt.colorbar().set_label('Azimuth [deg]')
 
 		plt.axvline(toff, color='orange')
@@ -374,10 +374,10 @@ def main():
 
 		plt.tight_layout()
 		plt.savefig('./weatherdashboard.png', dpi=200)
-	    uploadFileFTP('./weatherdashboard.png', './weatherdashboard.png', server, username, password)
+		uploadFileFTP('./weatherdashboard.png', './weatherdashboard.png', server, username, password)
 		plt.close()
 
 		time.sleep(30)
 
 if __name__ == "__main__":
-    main()
+	main()
