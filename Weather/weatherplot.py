@@ -1,6 +1,5 @@
 import sys
 import ftplib
-import time
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -19,6 +18,7 @@ from astropy.coordinates import SkyCoord, EarthLocation, AltAz, get_sun, get_moo
 from datetime import datetime as dt
 from datetime import timedelta
 from scipy import interpolate
+from time import sleep
 
 def uploadFileFTP(sourceFile1, sourceFile2, server, username, password):
 	print('Uploading ' + sourceFile1)
@@ -373,7 +373,7 @@ def main():
 		uploadFileFTP('./weatherdashboard.png', './weatherdashboard.png', server, username, password)
 		plt.close()
 
-		time.sleep(30)
+		sleep(30)
 
 if __name__ == "__main__":
 	main()
