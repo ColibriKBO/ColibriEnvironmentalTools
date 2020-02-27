@@ -26,6 +26,7 @@ def uploadFileFTP(sourceFile1, server, username, password):
 	ftp.login(username, password)
 	ftp.storbinary('STOR ' + sourceFile1, open(sourceFile1, 'rb'), 1024)
 	ftp.quit()
+	print('Done uploading...')
 
 # def getData(address, sckt, req_data):
 # 	print(address)
