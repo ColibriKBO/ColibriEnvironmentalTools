@@ -67,6 +67,7 @@ def rot_text(ang):
 	return rotation
 
 def spdang(spd):
+	maxspeed = 30
 	angle = 180.0 - (spd/maxspeed*180.0)
 	return angle
 
