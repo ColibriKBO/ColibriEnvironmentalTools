@@ -113,14 +113,14 @@ def main():
 	cld_socket = socket(AF_INET, SOCK_DGRAM)
 	cld_socket.settimeout(2)
 
-	wx_socket.connect(wx_address)
+	#wx_socket.connect(wx_address)
 
 	while(1):
 		req_data = b'READ\n'
 		try:
 			print('Trying...')
 			print('test1')
-			wx_socket.sendall(req_data)
+			wx_socket.sendto(req_data, wx_address)
 			print('test2')
 			rec_data = wx_socket.recv(1024)
 			print('test3')
