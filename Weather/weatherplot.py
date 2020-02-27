@@ -369,8 +369,8 @@ def main():
 		print(Time.now())
 
 		plt.tight_layout()
-		plt.savefig('./weatherdashboard.png', dpi=200)
-		uploadFileFTP('./weatherdashboard.png', './weatherdashboard.png', server, username, password)
+		plt.savefig('./weatherdashboard.jpg', dpi=200)
+		uploadFileFTP('./weatherdashboard.jpg', './weatherdashboard.jpg', server, username, password)
 		plt.close()
 
 		sleep(30)
