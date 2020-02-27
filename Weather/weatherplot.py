@@ -107,22 +107,27 @@ def main():
 	wx_address= (b'172.16.61.10', 17770)
 	cld_address = (b'10.0.20.10', 8888)
 
-	wx_socket = socket(AF_INET, SOCK_STREAM)
-	wx_socket.settimeout(10)
+	
 
 	cld_socket = socket(AF_INET, SOCK_DGRAM)
 	cld_socket.settimeout(10)
 
-	#wx_socket.connect(wx_address)
+	
 
 	while(1):
 		req_data = b'READ\n'
+
 		try:
 			print('Trying...')
 			print('test1')
-			wx_socket.sendto(req_data, wx_address)
+			
+			wx_socket.connect(wx_address)
+			wx_socket = socket(AF_INET, SOCK_STREAM)
+			wx_socket.settimeout(10)
+
+			wx_socket.sendall(req_data)
 			print('test2')
-			rec_data, addr = wx_socket.recvfrom(2048)
+			rec_data = wx_socket.recv(1024)
 			print('test3')
 			wx_socket.close()
 
