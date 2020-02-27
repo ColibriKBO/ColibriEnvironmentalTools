@@ -1,5 +1,6 @@
 import sys
 import ftplib
+import time
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -27,24 +28,20 @@ def uploadFileFTP(sourceFile1, sourceFile2, server, username, password):
 	ftp.storbinary('STOR ' + sourceFile2, open(sourceFile2, 'rb'), 1024)
 	ftp.quit()
 
-def getData(address, sckt, req_data):
-	print(address)
-	try:
-		# req_data = b'READ\n'
-		print(sckt)
-		sckt.connect(address)
-		print('1')
-		sckt.sendto(req_data, address)
-		print('2')
-		rec_data, addr = sckt.recvfrom(2048)
-		print('3')
-		sckt.close()
-		# print(str(rec_data, 'utf-8'))
-		msg = str(rec_data, 'utf-8')
-	except:
-		msg = 'Null'
-		pass
-	return msg
+# def getData(address, sckt, req_data):
+# 	print(address)
+# 	try:
+# 		# req_data = b'READ\n'
+# 		print(sckt)
+# 		sckt.connect(address)
+# 		sckt.sendto(req_data, address)
+# 		rec_data, addr = sckt.recvfrom(2048)
+# 		sckt.close()
+# 		msg = str(rec_data, 'utf-8')
+# 	except:
+# 		msg = 'Null'
+# 		pass
+# 	return msg
 
 def label(xy, text):
 	y = xy[1] - 0.15  # shift y-value for label so that it's below the artist
@@ -124,7 +121,7 @@ def main():
 			wx_socket.close()
 			now = dt.now()
 			msg = str(rec_data, 'utf-8')
-			print(msg)
+			# print(msg)
 		except:
 			pass
 
