@@ -117,10 +117,14 @@ def main():
 		try:
 			print('Trying...')
 			req_data = b'READ\n'
+			print('test1')
 			wx_socket.connect(wx_address)
 			wx_socket.sendall(req_data)
+			print('test2')
 			rec_data = wx_socket.recv(1024)
+			print('test3')
 			wx_socket.close()
+
 			now = dt.now()
 			msg = str(rec_data, 'utf-8')
 		
