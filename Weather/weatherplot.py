@@ -113,7 +113,7 @@ def main():
 	cld_socket = socket(AF_INET, SOCK_DGRAM)
 	cld_socket.settimeout(2)
 
-	while (1):
+	while(1):
 		try:
 			req_data = b'READ\n'
 			wx_socket.connect(wx_address)
@@ -122,7 +122,6 @@ def main():
 			wx_socket.close()
 			now = dt.now()
 			msg = str(rec_data, 'utf-8')
-			# print(msg)
 		
 			msg = msg.split('\n')
 
