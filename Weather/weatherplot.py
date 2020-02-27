@@ -107,14 +107,16 @@ def main():
 	wx_address= (b'172.16.61.10', 17770)
 	cld_address = (b'10.0.20.10', 8888)
 
-	wx_socket = socket(AF_INET, SOCK_STREAM)
-	wx_socket.settimeout(10)
+
 
 	cld_socket = socket(AF_INET, SOCK_DGRAM)
 	cld_socket.settimeout(2)
 
 	while(1):
 		req_data = b'READ\n'
+		
+		wx_socket = socket(AF_INET, SOCK_STREAM)
+		wx_socket.settimeout(10)
 		wx_socket.connect(wx_address)
 
 		try:
@@ -377,7 +379,7 @@ def main():
 
 		except:
 			pass
-			
+
 		wx_socket.close()
 		sleep(30)
 
