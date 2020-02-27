@@ -21,7 +21,7 @@ from datetime import timedelta
 from scipy import interpolate
 
 def uploadFileFTP(sourceFile1, sourceFile2, server, username, password):
-	print('Uploading ' + sourceFilePath)
+	print('Uploading ' + sourceFile1)
 	ftp = ftplib.FTP(server)
 	ftp.login(username, password)
 	ftp.storbinary('STOR ' + sourceFile1, open(sourceFile1, 'rb'), 1024)
