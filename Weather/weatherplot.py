@@ -115,6 +115,7 @@ def main():
 
 	while(1):
 		try:
+			print('Trying...')
 			req_data = b'READ\n'
 			wx_socket.connect(wx_address)
 			wx_socket.sendall(req_data)
