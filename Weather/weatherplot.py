@@ -20,12 +20,11 @@ from datetime import timedelta
 from scipy import interpolate
 from time import sleep
 
-def uploadFileFTP(sourceFile1, sourceFile2, server, username, password):
+def uploadFileFTP(sourceFile1, server, username, password):
 	print('Uploading ' + sourceFile1)
 	ftp = ftplib.FTP(server)
 	ftp.login(username, password)
 	ftp.storbinary('STOR ' + sourceFile1, open(sourceFile1, 'rb'), 1024)
-	ftp.storbinary('STOR ' + sourceFile2, open(sourceFile2, 'rb'), 1024)
 	ftp.quit()
 
 # def getData(address, sckt, req_data):
@@ -368,7 +367,7 @@ def main():
 
 			plt.tight_layout()
 			plt.savefig('./weatherdashboard.jpg', dpi=200)
-			uploadFileFTP('./weatherdashboard.jpg', './weatherdashboard.jpg', server, username, password)
+			uploadFileFTP('./weatherdashboard.jpg', server, username, password)
 			plt.close()
 
 		except:
