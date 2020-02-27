@@ -248,8 +248,6 @@ def main():
 		else:
 			spdcolor = 'green'
 
-		print(spdang(shutspd))
-
 		wedge_spd = mpatches.Wedge([0,0], 0.085, spdang(speed), 180, width=0.02, ec="none", fc=spdcolor, lw=1)
 
 		wedge_warn = mpatches.Wedge([0,0], 0.085, spdang(warnspd)-1, spdang(warnspd)+1, width=0.02, ec="white", fc='orange', lw=1)
