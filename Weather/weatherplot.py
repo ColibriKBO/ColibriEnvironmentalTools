@@ -28,21 +28,6 @@ def uploadFileFTP(sourceFile1, server, username, password):
 	ftp.quit()
 	print('Done uploading...')
 
-# def getData(address, sckt, req_data):
-# 	print(address)
-# 	try:
-# 		# req_data = b'READ\n'
-# 		print(sckt)
-# 		sckt.connect(address)
-# 		sckt.sendto(req_data, address)
-# 		rec_data, addr = sckt.recvfrom(2048)
-# 		sckt.close()
-# 		msg = str(rec_data, 'utf-8')
-# 	except:
-# 		msg = 'Null'
-# 		pass
-# 	return msg
-
 def label(xy, text):
 	y = xy[1] - 0.15  # shift y-value for label so that it's below the artist
 	plt.text(xy[0], y, text, ha="center", family='sans-serif', size=14)
@@ -114,18 +99,15 @@ def main():
 
 	while(1):
 		req_data = b'READ\n'
-		
+
 		wx_socket = socket(AF_INET, SOCK_STREAM)
 		wx_socket.settimeout(10)
 		wx_socket.connect(wx_address)
 
 		try:
 			print('Trying...')
-			print('test1')
 			wx_socket.sendall(req_data)
-			print('test2')
 			rec_data = wx_socket.recv(1024)
-			print('test3')
 
 			now = dt.now()
 			msg = str(rec_data, 'utf-8')
@@ -204,7 +186,6 @@ def main():
 			patches = []
 
 			cmaparr = sliceCBar(maxspeed,'viridis')
-
 			cloudblk, cloudx, cloudy, tempg = openCloudLog('../../CloudMonitor/current.log')
 
 			# fig, ax = plt.subplots()
@@ -373,8 +354,8 @@ def main():
 			print(Time.now())
 
 			plt.tight_layout()
-			plt.savefig('./weatherdashboard.jpg', dpi=200)
-			uploadFileFTP('./weatherdashboard.jpg', server, username, password)
+			plt.savefig('./weatherdashboard.png', dpi=200)
+			uploadFileFTP('./weatherdashboard.png', server, username, password)
 			plt.close()
 
 		except:
