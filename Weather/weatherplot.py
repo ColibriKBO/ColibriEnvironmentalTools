@@ -166,14 +166,14 @@ def main():
 			t = dt.now()
 			tdec = int(t.strftime('%H'))+int(t.strftime('%M'))/60 + int(t.strftime('%S'))/3600
 
-			print((get_moon(Time.now()).transform_to(AltAz(obstime=Time.now(), location=elginfield)).az*u.deg).value)
+			# print((get_moon(Time.now()).transform_to(AltAz(obstime=Time.now(), location=elginfield)).az*u.deg).value)
 
 			if tdec > 12.0 and tdec < 24.0:
 				toff = tdec - 24.0
 			else:
 				toff = tdec
 
-			print(toff)
+			# print(toff)
 
 			warnspd = 15
 			shutspd = 25
@@ -351,7 +351,7 @@ def main():
 			plt.xlabel('Hours from EST Midnight')
 			plt.ylabel('Altitude [deg]')
 
-			print(Time.now())
+			# print(Time.now())
 
 			plt.tight_layout()
 			plt.savefig('./weatherdashboard.png', dpi=200)
