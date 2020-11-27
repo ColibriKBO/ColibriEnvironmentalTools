@@ -131,11 +131,17 @@ def main():
 			timenow = now.strftime("%H:%M:%S")
 			wnddir = np.radians(d_wnd)
 
+			elginfield = EarthLocation(lat=43.192*u.deg, lon=-81.318*u.deg, height=586*u.m)
+			moonaz = "{:.1f}".format((get_moon(Time.now()).transform_to(AltAz(obstime=Time.now(), location=elginfield)).az*u.deg).value)
+			moonalt = "{:.1f}".format((get_moon(Time.now()).transform_to(AltAz(obstime=Time.now(), location=elginfield)).alt*u.deg).value)
+			sunaz = "{:.1f}".format((get_sun(Time.now()).transform_to(AltAz(obstime=Time.now(), location=elginfield)).az*u.deg).value)
+			sunalt = "{:.1f}".format((get_sun(Time.now()).transform_to(AltAz(obstime=Time.now(), location=elginfield)).alt*u.deg).value)
+
 			desktoppath = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
 			f = open(desktoppath + '\\weather-current.log', 'w')
 			fmt = '%10s%9s%3s%2s%2s%7s%7s%7s%7s%4s%7s%4s%2s%2s%6s%13s%2s%2s%2s%2s%2s%2s'
 			f.write(fmt % (datenow, timenow, '.00', 'C', 'K', str(t_in), str(t_out), str(t_obs), str(v_wnd),\
-			 str(h_out), str(dew), '000', '0', '0', '00020', '999', '1', '1', '1', '0', '0', '0'))
+			 str(h_out), str(dew), '000', '0', '0', '0001', '1', '1', '1', '1', '0', '0', '0')) #, str(sunaz), str(sunalt), str(moonaz), str(moonalt)))
 			# f.write(timenow + ' ' + str(baro) + ' ' + str(t_in) + ' ' + str(t_out) + ' '\
 			# 	+ str(t_obs) + ' ' + str(h_in) + ' ' + str(h_out) + ' ' + str(v_wnd) + ' '\
 			# 	+ str(v_wnd_av) + ' ' + str(d_wnd) + ' ' + str(rain) + ' ' + str(dew))
@@ -153,7 +159,7 @@ def main():
 
 			# Create dashboard...
 
-			elginfield = EarthLocation(lat=43.192*u.deg, lon=-81.318*u.deg, height=586*u.m)
+
 			utcoffset = (time.localtime().tm_hour-time.gmtime().tm_hour)*u.hour  # Eastern Standard Time
 
 			t = dt.now()
@@ -170,10 +176,8 @@ def main():
 			moonaltazs_current = moon_current.transform_to(current_frame)
 			#t = Time(Time.now(),format='iso')
 			t = dt.now()
-			print(t)
+			print("Moon...")
 			tdec = int(t.strftime('%H'))+int(t.strftime('%M'))/60 + int(t.strftime('%S'))/3600
-
-			# print((get_moon(Time.now()).transform_to(AltAz(obstime=Time.now(), location=elginfield)).az*u.deg).value)
 
 			if tdec > 12.0 and tdec < 24.0:
 				toff = tdec - 24.0
@@ -336,6 +340,7 @@ def main():
 
 			ax_cld = fig.add_subplot(3,1,3)
 			minmoonalt = np.min(moonaltazs_current.alt*u.deg).value
+
 			ax_cld.plot(delta_midnight, sunaltazs_current.alt, color='r', label='Sun')
 			ax_cld.plot(delta_midnight, moonaltazs_current.alt, color=[0.75]*3, ls='--', label='Moon')
 			# plt.scatter(delta_midnight, m33altazs_current.alt,
