@@ -1,4 +1,4 @@
-import sys
+import sys, time, os
 import ftplib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -19,6 +19,7 @@ from datetime import datetime as dt
 from datetime import timedelta
 from scipy import interpolate
 from time import sleep
+
 
 def uploadFileFTP(sourceFile1, server, username, password):
 	print('Uploading ' + sourceFile1)
@@ -92,8 +93,6 @@ def main():
 	wx_address= (b'172.16.61.10', 17770)
 	cld_address = (b'10.0.20.10', 8888)
 
-
-
 	cld_socket = socket(AF_INET, SOCK_DGRAM)
 	cld_socket.settimeout(2)
 
@@ -128,14 +127,18 @@ def main():
 			rain = int(float(msg[18].split()[1]))
 			dew = int(float(msg[19].split()[1]))
 
-			time = now.strftime("%Y-%m-%d %H:%M:%S")
-
+			datenow = now.strftime("%Y-%m-%d")
+			timenow = now.strftime("%H:%M:%S")
 			wnddir = np.radians(d_wnd)
 
-			f = open('weather-current.txt', 'w')
-			f.write(time + ' ' + str(baro) + ' ' + str(t_in) + ' ' + str(t_out) + ' '\
-				+ str(t_obs) + ' ' + str(h_in) + ' ' + str(h_out) + ' ' + str(v_wnd) + ' '\
-				+ str(v_wnd_av) + ' ' + str(d_wnd) + ' ' + str(rain) + ' ' + str(dew))
+			desktoppath = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+			f = open(desktoppath + '\\weather-current.log', 'w')
+			fmt = '%10s%9s%3s%2s%2s%7s%7s%7s%7s%4s%7s%4s%2s%2s%6s%13s%2s%2s%2s%2s%2s%2s'
+			f.write(fmt % (datenow, timenow, '.00', 'C', 'K', str(t_in), str(t_out), str(t_obs), str(v_wnd),\
+			 str(h_out), str(dew), '000', '0', '0', '00020', '999', '1', '1', '1', '0', '0', '0'))
+			# f.write(timenow + ' ' + str(baro) + ' ' + str(t_in) + ' ' + str(t_out) + ' '\
+			# 	+ str(t_obs) + ' ' + str(h_in) + ' ' + str(h_out) + ' ' + str(v_wnd) + ' '\
+			# 	+ str(v_wnd_av) + ' ' + str(d_wnd) + ' ' + str(rain) + ' ' + str(dew))
 			f.close()
 
 			print('#####')
@@ -151,19 +154,23 @@ def main():
 			# Create dashboard...
 
 			elginfield = EarthLocation(lat=43.192*u.deg, lon=-81.318*u.deg, height=586*u.m)
-			utcoffset = -5*u.hour  # Eastern Standard Time
-			time = Time('2012-7-12 23:00:00') - utcoffset
+			utcoffset = (time.localtime().tm_hour-time.gmtime().tm_hour)*u.hour  # Eastern Standard Time
 
-			midnight = Time('2020-01-27 00:00:00') - utcoffset
+			t = dt.now()
+			today = Time(t.strftime('%Y-%m-%d') + ' 23:59:59') - utcoffset
+			midnight = Time(today)
+			# midnight = Time('2020-01-27 00:00:00') - utcoffset
+
 			delta_midnight = np.linspace(-12, 12, 1000)*u.hour
-			times_July12_to_13 = midnight + delta_midnight
-			frame_July12_to_13 = AltAz(obstime=times_July12_to_13, location=elginfield)
-			sunaltazs_July12_to_13 = get_sun(times_July12_to_13).transform_to(frame_July12_to_13)
+			current_times = midnight + delta_midnight
+			current_frame = AltAz(obstime=current_times, location=elginfield)
+			sunaltazs_current = get_sun(current_times).transform_to(current_frame)
 
-			moon_July12_to_13 = get_moon(times_July12_to_13)
-			moonaltazs_July12_to_13 = moon_July12_to_13.transform_to(frame_July12_to_13)
+			moon_current = get_moon(current_times)
+			moonaltazs_current = moon_current.transform_to(current_frame)
 			#t = Time(Time.now(),format='iso')
 			t = dt.now()
+			print(t)
 			tdec = int(t.strftime('%H'))+int(t.strftime('%M'))/60 + int(t.strftime('%S'))/3600
 
 			# print((get_moon(Time.now()).transform_to(AltAz(obstime=Time.now(), location=elginfield)).az*u.deg).value)
@@ -328,17 +335,17 @@ def main():
 			# ax_t2 = fig.add_subplot(3,3,6)
 
 			ax_cld = fig.add_subplot(3,1,3)
-			minmoonalt = np.min(moonaltazs_July12_to_13.alt*u.deg).value
-			ax_cld.plot(delta_midnight, sunaltazs_July12_to_13.alt, color='r', label='Sun')
-			ax_cld.plot(delta_midnight, moonaltazs_July12_to_13.alt, color=[0.75]*3, ls='--', label='Moon')
-			# plt.scatter(delta_midnight, m33altazs_July12_to_13.alt,
-			#             c=m33altazs_July12_to_13.az, label='M33', lw=0, s=8,
+			minmoonalt = np.min(moonaltazs_current.alt*u.deg).value
+			ax_cld.plot(delta_midnight, sunaltazs_current.alt, color='r', label='Sun')
+			ax_cld.plot(delta_midnight, moonaltazs_current.alt, color=[0.75]*3, ls='--', label='Moon')
+			# plt.scatter(delta_midnight, m33altazs_current.alt,
+			#             c=m33altazs_current.az, label='M33', lw=0, s=8,
 			#             cmap='viridis')
 			ax_cld.fill_between([-12,12],-18,0, hatch='x', color='green', alpha=0.8)
 			ax_cld.fill_between(delta_midnight, 0, 90,
-							 sunaltazs_July12_to_13.alt < -0*u.deg, color='0.5', zorder=0)
+							 sunaltazs_current.alt < -0*u.deg, color='0.5', zorder=0)
 			ax_cld.fill_between(delta_midnight, 0, 90,
-							 sunaltazs_July12_to_13.alt < -18*u.deg, color='k', zorder=0)
+							 sunaltazs_current.alt < -18*u.deg, color='k', zorder=0)
 			# plt.colorbar().set_label('Azimuth [deg]')
 
 			plt.axvline(toff, color='orange')
