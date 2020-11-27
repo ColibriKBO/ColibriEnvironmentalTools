@@ -1,4 +1,8 @@
 
 Weather/ftpmod.py
+<<<<<<< HEAD
 Weather/__pycache__/ftpmod.cpython-37.pyc
 Weather/weather-current.txt
+Cameras/ftpmod.py
+=======
+>>>>>>> parent of f499d60... Update .gitignore
