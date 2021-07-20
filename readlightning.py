@@ -4,7 +4,7 @@ import csv
 
 time.sleep(2)
 
-ser = serial.Serial('COM4',115200)
+ser = serial.Serial('COM8',115200)
 
 data= []
 
