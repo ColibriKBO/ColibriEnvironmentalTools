@@ -149,6 +149,7 @@ def main():
 			print(log_path)
 			print(log_path + 'weather')
 			f = open(log_path + 'weather-current.log')
+			print('File opened')
 			fmt = '%10s%9s%3s%2s%2s%7s%7s%7s%7s%4s%7s%4s%2s%2s%6s%13s%2s%2s%2s%2s%2s%2s'
 			f.write(fmt % (datenow, timenow, '.00', 'C', 'K', str(t_in), str(t_out), str(t_obs), str(v_wnd),\
 			 str(h_out), str(dew), '000', '0', '0', '0001', '1', '1', '1', '1', '0', '0', '0')) #, str(sunaz), str(sunalt), str(moonaz), str(moonalt)))
