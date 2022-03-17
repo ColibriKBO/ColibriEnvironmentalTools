@@ -141,8 +141,8 @@ def main():
 			sunaz = "{:.1f}".format((get_sun(Time.now()).transform_to(AltAz(obstime=Time.now(), location=elginfield)).az*u.deg).value)
 			sunalt = "{:.1f}".format((get_sun(Time.now()).transform_to(AltAz(obstime=Time.now(), location=elginfield)).alt*u.deg).value)
 
-			log_path = 'd:\\Weather\\Logs\\'
-			image_path = 'd:\\Weather\\Images\\'
+			log_path = 'd:/Weather/Logs/'
+			image_path = 'd:/Weather/Images/'
 
 			# desktoppath = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
 			# f = open(desktoppath + '\\weather-current.log', 'w')
