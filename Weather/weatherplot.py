@@ -156,6 +156,7 @@ def main():
 			# f.write(timenow + ' ' + str(baro) + ' ' + str(t_in) + ' ' + str(t_out) + ' '\
 			# 	+ str(t_obs) + ' ' + str(h_in) + ' ' + str(h_out) + ' ' + str(v_wnd) + ' '\
 			# 	+ str(v_wnd_av) + ' ' + str(d_wnd) + ' ' + str(rain) + ' ' + str(dew))
+			print('File written')
 			f.close()
 
 			print('#####')
