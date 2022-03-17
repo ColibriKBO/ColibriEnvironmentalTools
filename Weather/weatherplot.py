@@ -15,6 +15,7 @@ from matplotlib import font_manager as fm
 from pylab import *
 from astropy.time import Time
 from astropy.coordinates import SkyCoord, EarthLocation, AltAz, get_sun, get_moon
+from astropy.utils import data
 from datetime import datetime as dt
 from datetime import timedelta
 from scipy import interpolate
@@ -90,6 +91,9 @@ def openCloudLog(logname):
 	return block, x, y, temp
 
 def main():
+
+	data.clear_download_cache()
+
 	wx_address= (b'172.16.61.10', 17770)
 	cld_address = (b'10.0.20.10', 8888)
 
