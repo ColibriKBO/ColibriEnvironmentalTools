@@ -141,11 +141,13 @@ def main():
 			sunaz = "{:.1f}".format((get_sun(Time.now()).transform_to(AltAz(obstime=Time.now(), location=elginfield)).az*u.deg).value)
 			sunalt = "{:.1f}".format((get_sun(Time.now()).transform_to(AltAz(obstime=Time.now(), location=elginfield)).alt*u.deg).value)
 
-			log_path = 'd:\\Weather\\logs\\'
-			image_path = 'd:\\Weather\\images\\'
+			log_path = 'd:\\Weather\\Logs\\'
+			image_path = 'd:\\Weather\\Images\\'
 
 			# desktoppath = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
 			# f = open(desktoppath + '\\weather-current.log', 'w')
+			print(log_path)
+			print(log_path + 'weather')
 			f = open(log_path + 'weather-current.log')
 			fmt = '%10s%9s%3s%2s%2s%7s%7s%7s%7s%4s%7s%4s%2s%2s%6s%13s%2s%2s%2s%2s%2s%2s'
 			f.write(fmt % (datenow, timenow, '.00', 'C', 'K', str(t_in), str(t_out), str(t_obs), str(v_wnd),\
@@ -374,8 +376,8 @@ def main():
 			# print(Time.now())
 
 			plt.tight_layout()
-			plt.savefig('./weatherdashboard.png', dpi=200)
-			uploadFileFTP('./weatherdashboard.png', server, username, password)
+			plt.savefig(image_path + 'weatherdashboard.png', dpi=200)
+			uploadFileFTP(image_path + 'weatherdashboard.png', server, username, password)
 			plt.close()
 
 		except:
