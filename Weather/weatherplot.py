@@ -148,7 +148,7 @@ def main():
 			# f = open(desktoppath + '\\weather-current.log', 'w')
 			print(log_path)
 			print(log_path + 'weather')
-			f = open('./weather-current.log')
+			f = open(log_path + 'weather-current.log', 'w')
 			print('File opened')
 			fmt = '%10s%9s%3s%2s%2s%7s%7s%7s%7s%4s%7s%4s%2s%2s%6s%13s%2s%2s%2s%2s%2s%2s'
 			print(datenow)
