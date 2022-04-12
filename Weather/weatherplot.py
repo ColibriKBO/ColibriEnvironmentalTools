@@ -90,6 +90,23 @@ def openCloudLog(logname):
 
 	return block, x, y, temp
 
+def getClouds(logfile):
+	# Open cloud log and get last n lines
+	# with open(logfile, 'r') as f:
+	# 	lines = f.readlines()
+
+	cloud_data = np.loadtxt(logfile, delimiter=',')
+	
+	if len(cloud_data) > 10:
+		sky_t = np.mean(cloud_data[-10:,1])
+		ground_t = np.mean(cloud_data[-10:,2])
+	else:
+		sky_t = np.mean(cloud_data[:,1])
+		ground_t = np.mean(cloud_data[:,2])
+
+	return sky_t, ground_t 
+
+
 def main():
 
 	data.clear_download_cache()
@@ -99,6 +116,16 @@ def main():
 
 	cld_socket = socket(AF_INET, SOCK_DGRAM)
 	cld_socket.settimeout(2)
+
+	sky_t, ground_t = getClouds('d:\\Logs\\Weather\\CloudMonitor\\current-cloud.log')
+
+	delta_t = sky_t - ground_t
+
+	if np.abs(delta_t) > 19:
+		cloud_flag = 1
+	else:
+		cloud_flag = 3
+		alert_flag = 1
 
 	while(1):
 		req_data = b'READ\n'
@@ -131,6 +158,28 @@ def main():
 			rain = int(float(msg[18].split()[1]))
 			dew = int(float(msg[19].split()[1]))
 
+			# if dew > 0:
+			# 	dew_flag = 1
+			# else:
+			# 	dew_flag = 0
+
+			dew_flag = 0
+
+			# if rain > 0:
+			# 	rain_flag = 3
+			# else:
+			# 	rain_flag = 0
+
+			rain_flag = 0
+
+			# if (rain_flag > 0) or (cloud_flag > 1) or (dew_flag > 0):
+			if (cloud_flag > 1):
+				alert_flag = 1
+			else:
+				alert_flag = 0
+
+			print('Alert Flag: %s' % alert_flag)
+
 			datenow = now.strftime("%Y-%m-%d")
 			timenow = now.strftime("%H:%M:%S")
 			wnddir = np.radians(d_wnd)
@@ -141,15 +190,17 @@ def main():
 			sunaz = "{:.1f}".format((get_sun(Time.now()).transform_to(AltAz(obstime=Time.now(), location=elginfield)).az*u.deg).value)
 			sunalt = "{:.1f}".format((get_sun(Time.now()).transform_to(AltAz(obstime=Time.now(), location=elginfield)).alt*u.deg).value)
 
-			log_path = 'd:/Weather/Logs/'
-			image_path = 'd:/Weather/Images/'
-
+			log_path = 'd:/Logs/Weather/'
+			image_path = 'd:/Logs/Weather/Images/'
+			print('Made it...')
 			# desktoppath = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
 			# f = open(desktoppath + '\\weather-current.log', 'w')
 			f = open(log_path + 'weather-current.log', 'w')
+			print('Made it...')
 			fmt = '%10s%9s%3s%2s%2s%7s%7s%7s%7s%4s%7s%4s%2s%2s%6s%13s%2s%2s%2s%2s%2s%2s'
-			f.write(fmt % (datenow, timenow, '.00', 'C', 'K', str(t_in), str(t_out), str(t_obs), str(v_wnd),\
-			 str(h_out), str(dew), '000', '0', '0', '0001', '1', '1', '1', '1', '0', '0', '0')) #, str(sunaz), str(sunalt), str(moonaz), str(moonalt)))
+			print('Made it...')
+			f.write(fmt % (datenow, timenow, '.00', 'C', 'K', str('%.1f' % round(sky_t,2)), str('%.1f' % round(ground_t,1)), str(t_obs), str(v_wnd),\
+			 str(h_out), str(dew), '000', '0', '0', '0001', '1', str(int(cloud_flag)), '1', str(int(rain_flag)), '0', '0', str(int(alert_flag)))) #, str(sunaz), str(sunalt), str(moonaz), str(moonalt)))
 			# f.write(timenow + ' ' + str(baro) + ' ' + str(t_in) + ' ' + str(t_out) + ' '\
 			# 	+ str(t_obs) + ' ' + str(h_in) + ' ' + str(h_out) + ' ' + str(v_wnd) + ' '\
 			# 	+ str(v_wnd_av) + ' ' + str(d_wnd) + ' ' + str(rain) + ' ' + str(dew))
@@ -164,6 +215,9 @@ def main():
 			print('Humidity: ' + str(h_out) + '%')
 			print('Wind Speed: ' + str(v_wnd_av) + ' km/s')
 			print('Wind Direction: ' + str(d_wnd) + ' degrees')
+			print('Cloud Flag: %s' % cloud_flag)
+			print('Rain Flag: %s' % rain_flag)
+			print('Rain Value: %s' % rain)
 			# print(solar)
 
 			# Create dashboard...
@@ -376,7 +430,7 @@ def main():
 
 			plt.tight_layout()
 			plt.savefig(image_path + 'weatherdashboard.png', dpi=200)
-			uploadFileFTP(image_path + 'weatherdashboard.png', server, username, password)
+			# uploadFileFTP(image_path + 'weatherdashboard.png', server, username, password)
 			plt.close()
 
 		except:
