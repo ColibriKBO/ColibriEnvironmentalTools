@@ -97,6 +97,7 @@ def getClouds(logfile):
 
 	cloud_data = np.loadtxt(logfile, delimiter=',')
 	
+	# Average last 5 minutes of data (10 * 30s interval)
 	if len(cloud_data) > 10:
 		sky_t = np.mean(cloud_data[-10:,1])
 		ground_t = np.mean(cloud_data[-10:,2])
@@ -117,16 +118,6 @@ def main():
 	cld_socket = socket(AF_INET, SOCK_DGRAM)
 	cld_socket.settimeout(2)
 
-	sky_t, ground_t = getClouds('d:\\Logs\\Weather\\CloudMonitor\\current-cloud.log')
-
-	delta_t = sky_t - ground_t
-
-	if np.abs(delta_t) > 19:
-		cloud_flag = 1
-	else:
-		cloud_flag = 3
-		alert_flag = 1
-
 	while(1):
 		req_data = b'READ\n'
 
@@ -135,7 +126,22 @@ def main():
 		wx_socket.connect(wx_address)
 
 		try:
-			print('Trying...')
+			print('Trying to get cloud data...')
+
+			sky_t, ground_t = getClouds('d:\\Logs\\Weather\\CloudMonitor\\current-cloud.log')
+			delta_t = sky_t - ground_t
+			print('Got cloud data! Sky=%s Ground=%s Delta=%s' % (str('%.2f' % sky_t), str('%.2f' % ground_t), str('%.2f' % delta_t)))
+
+			if np.abs(delta_t) > 18:
+				cloud_flag = 1
+			elif np.abs(delta_t > 16) and np.abs(delta_t) < 18:
+				cloud_flag = 2
+			else:
+				cloud_flag = 3
+				alert_flag = 1
+
+			print('Trying to get weather data...')
+
 			wx_socket.sendall(req_data)
 			rec_data = wx_socket.recv(1024)
 
@@ -158,22 +164,22 @@ def main():
 			rain = int(float(msg[18].split()[1]))
 			dew = int(float(msg[19].split()[1]))
 
-			# if dew > 0:
-			# 	dew_flag = 1
-			# else:
-			# 	dew_flag = 0
+			if dew > 0:
+				dew_flag = 1
+			else:
+				dew_flag = 0
 
-			dew_flag = 0
+			# dew_flag = 0
 
-			# if rain > 0:
-			# 	rain_flag = 3
-			# else:
-			# 	rain_flag = 0
+			if rain > 0:
+				rain_flag = 3
+			else:
+				rain_flag = 0
 
-			rain_flag = 0
+			# rain_flag = 0
 
-			# if (rain_flag > 0) or (cloud_flag > 1) or (dew_flag > 0):
-			if (cloud_flag > 1):
+			if (rain_flag > 0) or (cloud_flag > 1) or (dew_flag > 0):
+			# if (cloud_flag > 1):
 				alert_flag = 1
 			else:
 				alert_flag = 0
@@ -192,13 +198,13 @@ def main():
 
 			log_path = 'd:/Logs/Weather/'
 			image_path = 'd:/Logs/Weather/Images/'
-			print('Made it...')
+			
 			# desktoppath = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
 			# f = open(desktoppath + '\\weather-current.log', 'w')
 			f = open(log_path + 'weather-current.log', 'w')
-			print('Made it...')
+
 			fmt = '%10s%9s%3s%2s%2s%7s%7s%7s%7s%4s%7s%4s%2s%2s%6s%13s%2s%2s%2s%2s%2s%2s'
-			print('Made it...')
+
 			f.write(fmt % (datenow, timenow, '.00', 'C', 'K', str('%.1f' % round(sky_t,2)), str('%.1f' % round(ground_t,1)), str(t_obs), str(v_wnd),\
 			 str(h_out), str(dew), '000', '0', '0', '0001', '1', str(int(cloud_flag)), '1', str(int(rain_flag)), '0', '0', str(int(alert_flag)))) #, str(sunaz), str(sunalt), str(moonaz), str(moonalt)))
 			# f.write(timenow + ' ' + str(baro) + ' ' + str(t_in) + ' ' + str(t_out) + ' '\
@@ -207,17 +213,26 @@ def main():
 			print('File written')
 			f.close()
 
-			print('#####')
-			print('Current Weather is...')
-			print('#####')
+			print('################')
+			print('# Weather Data #')
+			print('################')
 			print(' ')
 			print('Temperature: ' + str(t_out))
 			print('Humidity: ' + str(h_out) + '%')
 			print('Wind Speed: ' + str(v_wnd_av) + ' km/s')
 			print('Wind Direction: ' + str(d_wnd) + ' degrees')
-			print('Cloud Flag: %s' % cloud_flag)
+			
 			print('Rain Flag: %s' % rain_flag)
 			print('Rain Value: %s' % rain)
+			print('Dew Flag: %s' % dew_flag)
+			
+
+			print('Sky T: %s' % str('%.2f' % round(sky_t,2)))
+			print('Ground T: %s' % str('%.2f' % round(ground_t,2)))
+			print('Delta T: %s' % str('%.2f' % round(delta_t,2)))
+			print('Cloud Flag: %s' % cloud_flag)
+
+			print('Alert Flag: %s' % alert_flag)
 			# print(solar)
 
 			# Create dashboard...
@@ -239,7 +254,7 @@ def main():
 			moonaltazs_current = moon_current.transform_to(current_frame)
 			#t = Time(Time.now(),format='iso')
 			t = dt.now()
-			print("Moon...")
+			# print("Moon...")
 			tdec = int(t.strftime('%H'))+int(t.strftime('%M'))/60 + int(t.strftime('%S'))/3600
 
 			if tdec > 12.0 and tdec < 24.0:
