@@ -20,6 +20,7 @@ from datetime import datetime as dt
 from datetime import timedelta
 from scipy import interpolate
 from time import sleep
+from logging.handlers import TimedRotatingFileHandler
 
 
 def uploadFileFTP(sourceFile1, server, username, password):
@@ -118,6 +119,13 @@ def main():
 	cld_socket = socket(AF_INET, SOCK_DGRAM)
 	cld_socket.settimeout(2)
 
+	log_file = "d:\\Logs\\Weather\\Weather\\weather.log"
+
+	logger = logging.getLogger("Rotating Log")
+	logger.setLevel(logging.INFO)
+	handler = TimedRotatingFileHandler(log_file, when="midnight", interval=1, backupCount=90)
+	logger.addHandler(handler)
+
 	while(1):
 		req_data = b'READ\n'
 
@@ -212,6 +220,8 @@ def main():
 			# 	+ str(v_wnd_av) + ' ' + str(d_wnd) + ' ' + str(rain) + ' ' + str(dew))
 			print('File written')
 			f.close()
+
+			logger.info('%s,%s,%s,%s,%s,%s,%s,%s,%s' % (str(time.time()),str(t_out),str(h_out),str(v_wnd_av),str(d_wnd),str(rain),str(round(sky_t,2)),str(round(ground_t)),str(alert_flag)))
 
 			print('################')
 			print('# Weather Data #')
